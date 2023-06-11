@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+		<PlatformTarget>x64</PlatformTarget>
+		<LangVersion>11</LangVersion>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+        <AssemblyName>ShockLink.Integrations.TW</AssemblyName>
+        <RootNamespace>ShockLink.Integrations.TW</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Reference Include="0Harmony">
+        <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\MelonLoader\net35\0Harmony.dll</HintPath>
+      </Reference>
+      <Reference Include="MelonLoader">
+        <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\MelonLoader\net35\MelonLoader.dll</HintPath>
+      </Reference>
+      <Reference Include="Newtonsoft.Json">
+        <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\ChilloutVR_Data\Managed\Newtonsoft.Json.dll</HintPath>
+      </Reference>
+      <Reference Include="TotallyWholesome">
+        <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\TotallyWholesome.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>
