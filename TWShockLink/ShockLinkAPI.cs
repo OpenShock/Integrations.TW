@@ -2,6 +2,7 @@
 using System.Text;
 using MelonLoader;
 using Newtonsoft.Json;
+using ShockLink.Integrations.TW.API;
 
 namespace ShockLink.Integrations.TW;
 
@@ -58,5 +59,44 @@ internal static class ShockLinkAPI
             Logger.Error("Send failed", ex);
             throw;
         }
+    }
+
+    public static async Task<ShockerWithDevice?> GetShocker(Guid shockerId)
+    {
+        if (_client == null)
+        {
+            Logger.Msg("No ApiToken or Endpoint configured");
+            return null;
+        }
+        var response = await _client.GetAsync($"/1/shockers/{shockerId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            Logger.Warning("Error while getting shocker info", shockerId, response.StatusCode, await response.Content.ReadAsStringAsync());
+            return null;
+        }
+        var content = await response.Content.ReadAsStringAsync();
+        var json = JsonConvert.DeserializeObject<BaseResponse<ShockerWithDevice>>(content);
+        return json?.Data;
+    }
+    
+    public static async Task<IEnumerable<LogEntry>?> GetShockerLogs(Guid shockerId)
+    {
+        if (_client == null)
+        {
+            Logger.Msg("No ApiToken or Endpoint configured");
+            return null;
+        }
+        
+        var response = await _client.GetAsync($"/1/shockers/{shockerId}/logs");
+        Logger.Msg(response.StatusCode);
+        if (!response.IsSuccessStatusCode)
+        {
+            Logger.Warning("Error while getting shocker logs", shockerId, response.StatusCode, await response.Content.ReadAsStringAsync());
+            return null;
+        }
+        var content = await response.Content.ReadAsStringAsync();
+        Logger.Msg(content);
+        var json = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<LogEntry>>>(content);
+        return json?.Data;
     }
 }
