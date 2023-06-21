@@ -191,7 +191,6 @@ public class ShockLinkIntegrationTW : MelonMod
             Code = 200,
             Op = OperationTranslationLog[x.Type],
             Username = "Custom Name",
-            //Tm = "2023-06-06T13:03:49.715152"
             Tm = x.CreatedOn.ToString("O")
         }).ToArray();
     }
