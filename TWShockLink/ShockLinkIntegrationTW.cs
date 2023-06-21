@@ -2,15 +2,14 @@
 using System.Reflection;
 using HarmonyLib;
 using MelonLoader;
-using Newtonsoft.Json;
 using ShockLink.Integrations.TW;
+using ShockLink.Integrations.TW.API;
 using TotallyWholesome;
 using TotallyWholesome.Managers;
 using TotallyWholesome.Managers.Lead;
 using TotallyWholesome.Objects.ConfigObjects;
 using TWNetCommon.Data.ControlPackets;
 using Yggdrasil.Extensions;
-using Yggdrasil.Logging;
 
 [assembly: MelonInfo(typeof(ShockLinkIntegrationTW), "ShockLink.Integrations.TW", "1.0.0", "ShockLink Team")]
 
@@ -18,8 +17,7 @@ namespace ShockLink.Integrations.TW;
 
 public class ShockLinkIntegrationTW : MelonMod
 {
-    private static readonly MelonLogger.Instance Logger = new(nameof(ShockLinkIntegrationTW), Color.LawnGreen);
-
+    private static readonly MelonLogger.Instance Logger = new("ShockLink.Integrations.TW", Color.LawnGreen);
     private const string DefaultBaseUri = "https://api.shocklink.net";
 
     public override void OnInitializeMelon()
@@ -43,7 +41,7 @@ public class ShockLinkIntegrationTW : MelonMod
         ApplyPatch(typeof(PiShockManager), "Execute",
             typeof(ShockLinkIntegrationTW), nameof(PatchExcecute));
 
-        ApplyPatch(typeof(PiShockManager), nameof(PiShockManager.RegisterNewToken),
+        ApplyPatch(typeof(PiShockManager), "RegisterNewToken",
             typeof(ShockLinkIntegrationTW), nameof(PatchRegisterNewToken));
 
         ApplyPatch(typeof(PiShockManager), "GetShockerLog",
@@ -77,10 +75,30 @@ public class ShockLinkIntegrationTW : MelonMod
     public static bool PatchRegisterNewToken(string code, Action<string, string> onCompleted, Action onFailed)
     {
         Logger.Msg("PatchRegisterNewToken");
-        Configuration.JSONConfig.PiShockShockers.Add(new PiShockShocker(code, code.Substring(0, 13)));
+        if (!Guid.TryParse(code, out var guid))
+        {
+            Logger.Warning($"Could not parse valid guid from input shocker id: {code}");
+            TotallyWholesome.Main.Instance.MainThreadQueue.Enqueue(onFailed.Invoke);
+            return false;
+        }
 
-        TotallyWholesome.Main.Instance.MainThreadQueue.Enqueue(() => onCompleted?.Invoke(code, code));
+        async void Action()
+        {
+            var info = await ShockLinkAPI.GetShocker(guid);
+            if (info == null)
+            {
+                Logger.Warning("Could not get shocker from remote api, make sure you entered the correct shocker id.");
+                TotallyWholesome.Main.Instance.MainThreadQueue.Enqueue(onFailed.Invoke);
+                return;
+            }
 
+            Configuration.JSONConfig.PiShockShockers.Add(new PiShockShocker(code, info.Name));
+            Configuration.SaveConfig();
+            TotallyWholesome.Main.Instance.MainThreadQueue.Enqueue(() => onCompleted.Invoke(code, info.Name));
+        }
+
+        new Task(Action).Start();
+        
         return false;
     }
 

@@ -2,9 +2,8 @@
 using System.Text;
 using MelonLoader;
 using Newtonsoft.Json;
-using ShockLink.Integrations.TW.API;
 
-namespace ShockLink.Integrations.TW;
+namespace ShockLink.Integrations.TW.API;
 
 // ReSharper disable once InconsistentNaming
 internal static class ShockLinkAPI
