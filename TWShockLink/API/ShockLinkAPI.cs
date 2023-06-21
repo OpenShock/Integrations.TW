@@ -40,16 +40,14 @@ internal static class ShockLinkAPI
         try
         {
             var messageString = JsonConvert.SerializeObject(data, Formatting.None);
-            Logger.Msg(messageString);
-
             var message = new HttpRequestMessage(HttpMethod.Post, "/1/shockers/control");
             message.Content = new StringContent(messageString, Encoding.UTF8, "application/json");
 
             var result = await _client.SendAsync(message);
             if (!result.IsSuccessStatusCode)
             {
-                Logger.Msg(result.StatusCode);
-                Logger.Msg(await result.Content.ReadAsStringAsync());
+                Logger.Error(result.StatusCode);
+                Logger.Error(await result.Content.ReadAsStringAsync());
             }
 
         }
