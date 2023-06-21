@@ -9,7 +9,7 @@ namespace ShockLink.Integrations.TW.API;
 internal static class ShockLinkAPI
 {
     private static HttpClient? _client;
-    private static readonly MelonLogger.Instance Logger = new(nameof(ShockLinkIntegrationTW), Color.LawnGreen);
+    private static readonly MelonLogger.Instance Logger = new("ShockLink.Integrations.TW", Color.LawnGreen);
 
     public static void Reload(string endpoint, string token)
     {
