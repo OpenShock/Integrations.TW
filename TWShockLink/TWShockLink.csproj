@@ -15,7 +15,7 @@
     <ItemGroup>
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
     </ItemGroup>
-    
+
     <ItemGroup>
       <Reference Include="0Harmony">
         <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\MelonLoader\net35\0Harmony.dll</HintPath>
@@ -27,7 +27,10 @@
         <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\ChilloutVR_Data\Managed\Newtonsoft.Json.dll</HintPath>
       </Reference>
       <Reference Include="TotallyWholesome">
-        <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\TotallyWholesome.dll</HintPath>
+        <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\UserData\TotallyWholesome\TotallyWholesome.dll</HintPath>
+      </Reference>
+      <Reference Include="WholesomeLoader">
+        <HintPath>..\..\..\..\..\Games\steamapps\common\ChilloutVR\Mods\WholesomeLoader.dll</HintPath>
       </Reference>
     </ItemGroup>
 
