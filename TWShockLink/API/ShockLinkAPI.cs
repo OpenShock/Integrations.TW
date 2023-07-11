@@ -9,32 +9,38 @@ namespace ShockLink.Integrations.TW.API;
 internal static class ShockLinkAPI
 {
     private static HttpClient? _client;
-    private static readonly MelonLogger.Instance Logger = new("ShockLink.Integrations.TW", Color.LawnGreen);
 
     public static void Reload(string endpoint, string token)
     {
         if (string.IsNullOrWhiteSpace(token))
         {
-            Logger.Msg("No ApiToken Configured");
+            ShockLinkIntegrationTW.Logger.Error("No ApiToken Configured");
             return;
         }
         if (string.IsNullOrWhiteSpace(endpoint))
         {
-            Logger.Msg("No Endpoint Configured");
+            ShockLinkIntegrationTW.Logger.Error("No Endpoint Configured");
             return;
         }
 
-        _client = new();
-        _client.BaseAddress = new Uri(endpoint);
-        _client.DefaultRequestHeaders.Add("ShockLinkToken", token);
-        Logger.Msg("Setup Client");
+        try
+        {
+            _client = new();
+            _client.BaseAddress = new Uri(endpoint);
+            _client.DefaultRequestHeaders.Add("ShockLinkToken", token);
+            ShockLinkIntegrationTW.Logger.Msg("Setup ShockLink API Client");
+        }
+        catch (UriFormatException e)
+        {
+            ShockLinkIntegrationTW.Logger.Error("The Base API URL entered is not a valid URL! Please check your settings!");
+        }
     }
 
     public static async Task Control(params Control[] data)
     {
         if (_client == null)
         {
-            Logger.Msg("No ApiToken or Endpoint configured");
+            ShockLinkIntegrationTW.Logger.Error("No ApiToken or Endpoint configured");
             return;
         }
         try
@@ -46,14 +52,14 @@ internal static class ShockLinkAPI
             var result = await _client.SendAsync(message);
             if (!result.IsSuccessStatusCode)
             {
-                Logger.Error(result.StatusCode);
-                Logger.Error(await result.Content.ReadAsStringAsync());
+                ShockLinkIntegrationTW.Logger.Error(result.StatusCode);
+                ShockLinkIntegrationTW.Logger.Error(await result.Content.ReadAsStringAsync());
             }
 
         }
         catch (Exception ex)
         {
-            Logger.Error("Send failed", ex);
+            ShockLinkIntegrationTW.Logger.Error("Send failed", ex);
             throw;
         }
     }
@@ -62,13 +68,13 @@ internal static class ShockLinkAPI
     {
         if (_client == null)
         {
-            Logger.Msg("No ApiToken or Endpoint configured");
+            ShockLinkIntegrationTW.Logger.Error("No ApiToken or Endpoint configured");
             return null;
         }
         var response = await _client.GetAsync($"/1/shockers/{shockerId}");
         if (!response.IsSuccessStatusCode)
         {
-            Logger.Warning("Error while getting shocker info", shockerId, response.StatusCode, await response.Content.ReadAsStringAsync());
+            ShockLinkIntegrationTW.Logger.Warning("Error while getting shocker info", shockerId, response.StatusCode, await response.Content.ReadAsStringAsync());
             return null;
         }
         var content = await response.Content.ReadAsStringAsync();
@@ -80,19 +86,19 @@ internal static class ShockLinkAPI
     {
         if (_client == null)
         {
-            Logger.Msg("No ApiToken or Endpoint configured");
+            ShockLinkIntegrationTW.Logger.Error("No ApiToken or Endpoint configured");
             return null;
         }
         
         var response = await _client.GetAsync($"/1/shockers/{shockerId}/logs");
-        Logger.Msg(response.StatusCode);
+        ShockLinkIntegrationTW.Logger.Msg(response.StatusCode);
         if (!response.IsSuccessStatusCode)
         {
-            Logger.Warning("Error while getting shocker logs", shockerId, response.StatusCode, await response.Content.ReadAsStringAsync());
+            ShockLinkIntegrationTW.Logger.Warning("Error while getting shocker logs", shockerId, response.StatusCode, await response.Content.ReadAsStringAsync());
             return null;
         }
         var content = await response.Content.ReadAsStringAsync();
-        Logger.Msg(content);
+        ShockLinkIntegrationTW.Logger.Msg(content);
         var json = JsonConvert.DeserializeObject<BaseResponse<IEnumerable<LogEntry>>>(content);
         return json?.Data;
     }

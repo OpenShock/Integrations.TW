@@ -14,7 +14,7 @@ public class TWPatches
 {
     public static void ApplyTWIntegration()
     {
-        ShockLinkIntegrationTW.Logger.Msg("Applying Patches");
+        ShockLinkIntegrationTW.Logger.Msg("Patching TotallyWholesome...");
 
         ApplyPatch(typeof(PiShockManager), "Execute",
             typeof(TWPatches), nameof(PatchExcecute));
@@ -28,14 +28,12 @@ public class TWPatches
         ApplyPatch(typeof(PiShockManager), "GetShockerInfo",
             typeof(TWPatches), nameof(PatchGetShockerInfo));
         
-        ShockLinkIntegrationTW.Logger.Msg("Finished applying Patches");
+        ShockLinkIntegrationTW.Logger.Msg("Successfully patched TotallyWholesome! ShockLink Integration ready!");
     }
     
     
     private static void ApplyPatch(Type originalClass, string originalMethod, Type patchType, string patchMethod)
     {
-        ShockLinkIntegrationTW.Logger.Msg($"Applying Patch {originalMethod}");
-
         try
         {
             var originalMethodInfo = originalClass.GetMethod(originalMethod,
@@ -47,8 +45,8 @@ public class TWPatches
         }
         catch (Exception ex)
         {
-            ShockLinkIntegrationTW.Logger.Error(ex);
             ShockLinkIntegrationTW.Logger.Error($"Failed to apply patch for {originalMethod}");
+            ShockLinkIntegrationTW.Logger.Error(ex);
         }
     }
     
