@@ -2,6 +2,6 @@
 
 public enum ShockerModelType
 {
-    Small = 0,
+    CaiXianlin = 0,
     PetTrainer = 1
 }
