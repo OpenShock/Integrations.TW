@@ -4,7 +4,7 @@ using MelonLoader;
 using ShockLink.Integrations.TW;
 using ShockLink.Integrations.TW.API;
 
-[assembly: MelonInfo(typeof(ShockLinkIntegrationTW), "ShockLink.Integrations.TW", "1.0.1", "ShockLink Team")]
+[assembly: MelonInfo(typeof(ShockLinkIntegrationTW), "ShockLink.Integrations.TW", "1.0.2", "ShockLink Team")]
 [assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
 [assembly: MelonOptionalDependencies("TotallyWholesome")]
 
